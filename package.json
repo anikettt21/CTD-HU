@@ -1,0 +1,37 @@
+{
+  "name": "computers-hub-antigravity",
+  "version": "1.0.0",
+  "description": "A complete frontend e-commerce website for a local computer shop, built with **HTML, CSS, and Vanilla JavaScript**.\r This project demonstrates a functional shopping cart, product management, and simple authentication style using `localStorage`.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "data:import": "node seeder.js",
+    "data:destroy": "node seeder.js -d"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anikettt21/CTD-HU.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/anikettt21/CTD-HU/issues"
+  },
+  "homepage": "https://github.com/anikettt21/CTD-HU#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

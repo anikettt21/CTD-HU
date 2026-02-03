@@ -65,6 +65,10 @@
 
         toggleBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            toggleMode();
+        });
+
+        function toggleMode() {
             isLogin = !isLogin;
             if (isLogin) {
                 document.getElementById('form-title').textContent = 'Login';
@@ -79,7 +83,13 @@
                 document.getElementById('toggle-text').textContent = 'Already have an account?';
                 toggleBtn.textContent = 'Login here';
             }
-        });
+        }
+
+        // Check for URL params to auto-switch to Register
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('mode') === 'register') {
+            toggleMode();
+        }
 
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -102,6 +112,13 @@
                     setCurrentUser(res.user);
                     window.location.href = 'index.html';
                 } else {
+                    if (res.message === 'Email already exists.') {
+                        alert("User already exists.");
+                        toggleMode(); // Switch to Login
+                        document.getElementById('email').value = email; // Keep email
+                        document.getElementById('password').value = ''; // clear password
+                        return;
+                    }
                     alert(res.message);
                 }
             }

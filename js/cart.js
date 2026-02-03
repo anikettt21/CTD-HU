@@ -165,6 +165,16 @@ function checkout() {
         return;
     }
 
+    // Check if user is logged in
+    const user = getCurrentUser();
+    if (!user) {
+        showToast('Please register to continue checkout', 'info');
+        setTimeout(() => {
+            window.location.href = 'login.html?mode=register';
+        }, 1000); // Small delay to let toast be seen
+        return;
+    }
+
     // Redirect to new Checkout Page
     window.location.href = 'checkout.html';
 }
