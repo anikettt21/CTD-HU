@@ -4,7 +4,9 @@
  * Replaces direct localStorage access.
  */
 
-const API_URL = 'http://localhost:5000/api';
+// Use relative path for production (where backend serves frontend)
+// This will resolve to http://domain.com/api or http://localhost:5000/api
+const API_URL = '/api';
 
 // --- HELPERS ---
 
