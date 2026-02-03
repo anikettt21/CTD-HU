@@ -167,7 +167,7 @@
             </div>
 
             <div class="summary-row"><span>Subtotal</span> <span id="summ-subtotal">$0.00</span></div>
-            <div class="summary-row"><span>Tax (5%)</span> <span id="summ-tax">$0.00</span></div>
+            <!-- <div class="summary-row"><span>GST (18%)</span> <span id="summ-tax">₹0.00</span></div> -->
             <div class="summary-row"><span>Shipping</span> <span id="summ-ship">Free</span></div>
             <div class="summary-row total-row"><span>Total</span> <span id="summ-total"
                     style="color: var(--primary-color);">$0.00</span></div>
@@ -212,17 +212,16 @@
                 list.innerHTML += `
                     <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
                         <span>${item.quantity}x ${item.name}</span>
-                        <span>$${total.toFixed(2)}</span>
+                        <span>₹${total.toLocaleString('en-IN')}</span>
                     </div>
                 `;
             });
 
-            const tax = subtotal * 0.05;
-            const total = subtotal + tax;
+            const total = subtotal;
 
-            document.getElementById('summ-subtotal').textContent = '$' + subtotal.toFixed(2);
-            document.getElementById('summ-tax').textContent = '$' + tax.toFixed(2);
-            document.getElementById('summ-total').textContent = '$' + total.toFixed(2);
+            document.getElementById('summ-subtotal').textContent = '₹' + subtotal.toLocaleString('en-IN');
+            // document.getElementById('summ-tax').textContent = '₹' + tax.toLocaleString('en-IN'); 
+            document.getElementById('summ-total').textContent = '₹' + total.toLocaleString('en-IN');
         }
 
         function processCheckout() {
@@ -252,7 +251,7 @@
 
                 // Construct Order
                 const cart = getCart();
-                const total = parseFloat(document.getElementById('summ-total').textContent.replace('$', ''));
+                const total = parseFloat(document.getElementById('summ-total').textContent.replace('₹', '').replace(/,/g, ''));
 
                 const order = {
                     userId: getCurrentUser() ? getCurrentUser().email : 'guest',

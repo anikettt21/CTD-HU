@@ -65,7 +65,7 @@ function loadDashboard() {
     document.getElementById('total-products').textContent = products.length;
     document.getElementById('total-orders').textContent = orders.length;
     document.getElementById('total-users').textContent = users.length; // Optional
-    document.getElementById('total-revenue').textContent = '$' + revenue.toFixed(2);
+    document.getElementById('total-revenue').textContent = '₹' + revenue.toLocaleString('en-IN');
 }
 
 function loadSalesChart() {
@@ -130,7 +130,7 @@ function loadProductsTable() {
             <td><img src="${product.image}" alt="${product.name}" style="width:50px;height:50px;object-fit:cover;"></td>
             <td>${product.name}</td>
             <td>${product.category}</td>
-            <td>$${product.price}</td>
+            <td>₹${product.price.toLocaleString('en-IN')}</td>
             <td>${product.stock}</td>
             <td>
                 <a href="add-product.html?id=${product.id}" class="btn btn-secondary action-btn">Edit</a>
@@ -214,7 +214,7 @@ function loadOrdersTable() {
             <td>${order.id}</td>
             <td>User #${order.userId}</td> 
             <td>${order.date}</td>
-            <td>$${order.totalAmount}</td>
+            <td>₹${order.totalAmount.toLocaleString('en-IN')}</td>
             <td>
                 <select onchange="updateStatusHandler(${order.id}, this.value)" style="padding:5px;">
                     ${statusOptions}

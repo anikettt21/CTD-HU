@@ -64,6 +64,24 @@ function initData() {
 }
 
 // --- PRODUCT GENERATOR ---
+// Check for currency migration (Simple heuristic: if laptops are cheap (< 5000), convert to INR)
+const currentProducts = JSON.parse(localStorage.getItem(PRODUCTS_KEY)) || [];
+if (currentProducts.length > 0) {
+    // Check a sample
+    const sample = currentProducts.find(p => p.category === 'Laptops');
+    if (sample && sample.price < 5000) {
+        console.log("Migrating prices to INR...");
+        const updated = currentProducts.map(p => {
+            p.price = Math.floor(p.price * 83); // Convert to approx INR
+            return p;
+        });
+        localStorage.setItem(PRODUCTS_KEY, JSON.stringify(updated));
+        showToast("Prices updated to Indian Rupees (INR)", "success");
+    }
+}
+
+
+// --- PRODUCT GENERATOR ---
 function generateInventory(count) {
     const categories = ['Laptops', 'Monitors', 'Accessories', 'Components'];
     const brands = ['Nexus', 'Hyperion', 'Vertex', 'Titan', 'Omen', 'Zenith', 'Nova', 'Flux', 'Cyber', 'Quantum', 'Aero', 'Swift'];
@@ -120,16 +138,16 @@ function generateInventory(count) {
 
         if (cat === 'Laptops') {
             noun = ['Book', 'Blade', '15', '17', 'Air', 'Note'].sort(() => Math.random() - 0.5)[0];
-            priceBase = 800 + Math.random() * 2000;
+            priceBase = 60000 + Math.random() * 100000;
         } else if (cat === 'Monitors') {
             noun = ['View', 'Vision', 'Display', 'X', 'OLED', 'Ultrawide'].sort(() => Math.random() - 0.5)[0];
-            priceBase = 200 + Math.random() * 800;
+            priceBase = 12000 + Math.random() * 40000;
         } else if (cat === 'Accessories') {
             noun = ['Mouse', 'Keypad', 'Headset', 'Audio', 'Click', 'Pad'].sort(() => Math.random() - 0.5)[0];
-            priceBase = 20 + Math.random() * 150;
+            priceBase = 800 + Math.random() * 8000;
         } else { // Components
             noun = ['Card', 'Core', 'Ryzen', 'GeForce', 'Case', 'Drive'].sort(() => Math.random() - 0.5)[0];
-            priceBase = 50 + Math.random() * 1000;
+            priceBase = 3000 + Math.random() * 80000;
         }
 
         const name = `${brand} ${noun} ${adj}`;
@@ -142,7 +160,7 @@ function generateInventory(count) {
             id: baseId + i,
             name: name,
             category: cat,
-            price: parseFloat(priceBase.toFixed(2)),
+            price: Math.floor(priceBase), // Integer prices for INR looks cleaner usually
             stock: Math.floor(Math.random() * 50) + 1, // Random stock 1-50
             image: image,
             description: `Experience the power of the ${name}. Features premium build quality and top-tier performance for ${cat.toLowerCase()}.`

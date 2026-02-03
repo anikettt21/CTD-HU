@@ -127,7 +127,7 @@ function renderCartPage() {
 
     if (cart.length === 0) {
         cartTableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Your cart is empty.</td></tr>';
-        totalEl.textContent = '$0.00';
+        totalEl.textContent = '₹0';
         return;
     }
 
@@ -140,12 +140,12 @@ function renderCartPage() {
                     ${item.name}
                 </div>
             </td>
-            <td>$${item.price}</td>
+            <td>₹${item.price.toLocaleString('en-IN')}</td>
             <td>
                 <input type="number" value="${item.quantity}" min="1" 
                        onchange="updateQuantity(${item.id}, this.value)" style="width: 60px;">
             </td>
-            <td>$${(item.price * item.quantity).toFixed(2)}</td>
+            <td>₹${(item.price * item.quantity).toLocaleString('en-IN')}</td>
             <td>
                 <button onclick="removeFromCart(${item.id})" class="btn btn-danger" style="padding:5px 10px;">X</button>
             </td>
@@ -154,7 +154,7 @@ function renderCartPage() {
     });
 
     const total = getCartTotal();
-    document.getElementById('cart-total').textContent = total.toFixed(2);
+    document.getElementById('cart-total').textContent = '₹' + total.toLocaleString('en-IN');
 }
 
 // Checkout Logic

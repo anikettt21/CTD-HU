@@ -82,7 +82,7 @@ function renderProducts(filterCategory = 'All', searchQuery = '') {
                     <p class="category" style="margin-bottom:0;">${product.category}</p>
                     ${stockBadge}
                 </div>
-                <div class="price">$${product.price}</div>
+                <div class="price">₹${product.price.toLocaleString('en-IN')}</div>
                 <div class="actions">
                     <button onclick="window.location.href='product.html?id=${product.id}'" class="btn btn-secondary">View</button>
                     <button onclick="addToCartHandler(${product.id})" class="btn" ${btnDisabled}>${btnText}</button>
@@ -146,7 +146,7 @@ function renderProductDetails() {
     document.getElementById('detail-image').src = product.image;
     document.getElementById('detail-name').textContent = product.name;
     document.getElementById('detail-category').textContent = product.category;
-    document.getElementById('detail-price').textContent = '$' + product.price;
+    document.getElementById('detail-price').textContent = '₹' + product.price.toLocaleString('en-IN');
     document.getElementById('detail-desc').textContent = product.description;
 
     // Add to cart button
@@ -247,7 +247,7 @@ function renderRelatedProducts(category, currentId) {
         div.innerHTML = `
             <img src="${p.image}" style="height:150px; cursor:pointer;" onclick="window.location.href='product.html?id=${p.id}'">
             <h4 style="cursor:pointer;" onclick="window.location.href='product.html?id=${p.id}'">${p.name}</h4>
-            <div class="price">$${p.price}</div>
+            <div class="price">₹${p.price.toLocaleString('en-IN')}</div>
             <button onclick="window.location.href='product.html?id=${p.id}'" class="btn btn-secondary btn-sm">View</button>
          `;
         container.appendChild(div);
@@ -338,10 +338,10 @@ function renderUserOrders() {
 
         const card = document.createElement('div');
         card.className = 'admin-card'; // Reuse style
-        card.style.background = 'white';
+        card.style.background = 'var(--card-bg)';
         card.style.padding = '20px';
         card.style.marginBottom = '20px';
-        card.style.borderRadius = '8px';
+        card.style.borderRadius = 'var(--radius)';
         card.style.boxShadow = 'var(--shadow-sm)';
 
         card.innerHTML = `
@@ -351,7 +351,7 @@ function renderUserOrders() {
             </div>
             <p><strong>Date:</strong> ${order.date}</p>
             <p><strong>Items:</strong> ${itemNames}</p>
-            <p><strong>Total:</strong> <span style="color:var(--primary-color); font-weight:bold;">$${order.totalAmount.toFixed(2)}</span></p>
+            <p><strong>Total:</strong> <span style="color:var(--primary-color); font-weight:bold;">₹${order.totalAmount.toLocaleString('en-IN')}</span></p>
             <p><strong>Payment:</strong> ${order.paymentMethod}</p>
             ${actionsHtml}
         `;
