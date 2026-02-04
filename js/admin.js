@@ -84,6 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
             logout();
         });
     }
+
+    // Reset Data listener
+
 });
 
 function setupLogin() {
