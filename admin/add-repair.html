@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add/Edit Repair - Admin Panel</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+
+<body class="admin-body">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul class="sidebar-nav">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="manage-products.html">Products</a></li>
+            <li><a href="add-product.html">Add Product</a></li>
+            <li><a href="manage-orders.html">Orders</a></li>
+            <li><a href="manage-repairs.html" class="active">Repairs</a></li>
+        </ul>
+        <ul class="sidebar-logout">
+            <li><a href="#" id="admin-logout">Logout</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="admin-header">
+            <h3 id="repair-form-title">Add Repair Job</h3>
+        </header>
+
+        <div class="content-padding">
+            <div class="admin-card" style="background: white; padding: 30px; border-radius: 8px; max-width: 600px;">
+                <form id="add-repair-form">
+                    <div class="form-group">
+                        <label>Customer Name</label>
+                        <input type="text" id="customerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Device Model</label>
+                        <input type="text" id="device" required placeholder="e.g. Dell Inspiron 15">
+                    </div>
+                    <div class="form-group">
+                        <label>Issue Description</label>
+                        <textarea id="issue" rows="3" required placeholder="e.g. Display broken"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Estimated Cost (₹)</label>
+                        <input type="number" id="cost" min="0" step="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="status" required>
+                            <option value="Pending">Pending</option>
+                            <option value="Diagnosing">Diagnosing</option>
+                            <option value="Repaired">Repaired</option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="repair-submit-btn" class="btn">Log Repair</button>
+                    <a href="manage-repairs.html" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+
+</html>

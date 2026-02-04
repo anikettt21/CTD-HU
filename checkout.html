@@ -255,6 +255,7 @@
 
                 const order = {
                     userId: getCurrentUser() ? getCurrentUser().email : 'guest',
+                    customerName: document.getElementById('ship-name').value, // Add customerName
                     items: cart,
                     totalAmount: total,
                     paymentMethod: 'Cash on Delivery',

@@ -7,6 +7,7 @@
 const PRODUCTS_KEY = 'products';
 const USERS_KEY = 'users';
 const ORDERS_KEY = 'orders';
+const REPAIRS_KEY = 'repairs'; // [ {id, customerName, device, issue, status, cost, date} ]
 const WISHLIST_KEY = 'wishlist'; // Store as { userId: [productId, productId...] } or plain list if single user demo
 const REVIEWS_KEY = 'reviews'; // [ {productId, userId, userName, rating, comment, date} ]
 const CURRENT_USER_KEY = 'currentUser';
@@ -60,6 +61,10 @@ function initData() {
 
     if (!localStorage.getItem(ORDERS_KEY)) {
         localStorage.setItem(ORDERS_KEY, JSON.stringify([]));
+    }
+
+    if (!localStorage.getItem(REPAIRS_KEY)) {
+        localStorage.setItem(REPAIRS_KEY, JSON.stringify([]));
     }
 }
 
@@ -207,6 +212,11 @@ function deleteProduct(id) {
     localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
 }
 
+function getTotalStock() {
+    const products = getProducts();
+    return products.reduce((total, p) => total + (parseInt(p.stock) || 0), 0);
+}
+
 // --- USER OPERATIONS ---
 
 function getUsers() {
@@ -261,6 +271,11 @@ function placeOrder(order) {
 
     // 1. Validate Stock
     for (const item of order.items) {
+        // Skip stock check for Services (Repair jobs)
+        if (item.id.toString().startsWith('REPAIR-')) {
+            continue;
+        }
+
         const product = products.find(p => p.id == item.id);
         if (!product || product.stock < item.quantity) {
             // In a real app we would error here, but for now we assume validation happened in UI
@@ -357,6 +372,56 @@ function addReview(review) {
     allReviews.push(review);
     localStorage.setItem(REVIEWS_KEY, JSON.stringify(allReviews));
     return review;
+}
+
+// --- REPAIR OPERATIONS ---
+
+function getRepairs() {
+    return JSON.parse(localStorage.getItem(REPAIRS_KEY)) || [];
+}
+
+function getRepairById(id) {
+    const repairs = getRepairs();
+    return repairs.find(r => r.id == id);
+}
+
+function addRepair(repair) {
+    const repairs = getRepairs();
+    repair.id = Date.now();
+    repair.date = new Date().toLocaleString();
+    if (!repair.status) repair.status = 'Pending';
+    repairs.push(repair);
+    localStorage.setItem(REPAIRS_KEY, JSON.stringify(repairs));
+    return repair;
+}
+
+function updateRepairStatus(id, newStatus) {
+    const repairs = getRepairs();
+    const repair = repairs.find(r => r.id == id);
+    if (repair) {
+        repair.status = newStatus;
+        localStorage.setItem(REPAIRS_KEY, JSON.stringify(repairs));
+        return true;
+    }
+    return false;
+}
+
+function deleteRepair(id) {
+    let repairs = getRepairs();
+    repairs = repairs.filter(r => r.id != id);
+    localStorage.setItem(REPAIRS_KEY, JSON.stringify(repairs));
+}
+
+function markRepairAsBilled(id) {
+    const repairs = getRepairs();
+    const repair = repairs.find(r => r.id == id);
+    if (repair) {
+        repair.isBilled = true;
+        repair.status = 'Repaired'; // Auto-move to Repaired if not already, or maybe Delivered? Let's leave status alone or set to Delivered? 
+        // User didn't specify status change, just read-only. But usually billing means it's done. 
+        // Let's just set isBilled = true.
+        localStorage.setItem(REPAIRS_KEY, JSON.stringify(repairs));
+    }
 }
 
 // --- UI UTILITIES (TOAST) ---

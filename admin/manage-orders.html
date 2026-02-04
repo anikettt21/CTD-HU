@@ -19,6 +19,9 @@
             <li><a href="manage-products.html">Products</a></li>
             <li><a href="add-product.html">Add Product</a></li>
             <li><a href="manage-orders.html" class="active">Orders</a></li>
+            <li><a href="manage-repairs.html">Repairs</a></li>
+            <li><a href="billing.html">Billing</a></li>
+            <li><a href="bill-history.html">Bill History</a></li>
         </ul>
         <ul class="sidebar-logout">
             <li><a href="#" id="admin-logout">Logout</a></li>
@@ -30,6 +33,22 @@
         <header class="admin-header">
             <h3>Manage Orders</h3>
         </header>
+
+        <div class="content-padding"
+            style="padding-bottom: 0; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="search-orders" placeholder="Search Orders..."
+                style="padding: 10px; width: 300px; border: 1px solid #ddd; border-radius: 5px;">
+
+            <select id="filter-period" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <option value="all">All Time</option>
+                <option value="24h">Past 24 Hours</option>
+                <option value="this-month">This Month</option>
+                <option value="last-month">Last Month</option>
+            </select>
+
+            <input type="date" id="filter-date" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;"
+                title="Filter by specific date">
+        </div>
 
         <div class="content-padding">
             <table class="admin-table" id="orders-table">

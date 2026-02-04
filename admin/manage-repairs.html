@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Products - Admin Panel</title>
+    <title>Manage Repairs - Admin Panel</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/admin.css">
 </head>
@@ -16,10 +16,10 @@
         <h2>Admin Panel</h2>
         <ul class="sidebar-nav">
             <li><a href="dashboard.html">Dashboard</a></li>
-            <li><a href="manage-products.html" class="active">Products</a></li>
+            <li><a href="manage-products.html">Products</a></li>
             <li><a href="add-product.html">Add Product</a></li>
             <li><a href="manage-orders.html">Orders</a></li>
-            <li><a href="manage-repairs.html">Repairs</a></li>
+            <li><a href="manage-repairs.html" class="active">Repairs</a></li>
             <li><a href="billing.html">Billing</a></li>
             <li><a href="bill-history.html">Bill History</a></li>
         </ul>
@@ -31,33 +31,25 @@
     <!-- Main Content -->
     <main class="main-content">
         <header class="admin-header">
-            <h3>Manage Products</h3>
-            <a href="add-product.html" class="btn">Add New Product</a>
+            <h3>Manage Repairs</h3>
+            <a href="add-repair.html" class="btn">New Repair Job</a>
         </header>
 
-        <div class="content-padding" style="padding-bottom: 0; display: flex; gap: 20px; align-items: center;">
-            <input type="text" id="search-products" placeholder="Search Products..."
+        <div class="content-padding" style="padding-bottom: 0;">
+            <input type="text" id="search-repairs" placeholder="Search Repairs..."
                 style="padding: 10px; width: 300px; border: 1px solid #ddd; border-radius: 5px;">
-
-            <div style="display: flex; align-items: center; gap: 5px;">
-                <input type="checkbox" id="show-out-of-stock" style="width: 16px; height: 16px;">
-                <label for="show-out-of-stock">Show Out of Stock Only</label>
-            </div>
-
-            <input type="number" id="filter-stock" placeholder="Max Stock (e.g. 5)"
-                style="padding: 10px; width: 150px; border: 1px solid #ddd; border-radius: 5px;">
         </div>
 
         <div class="content-padding">
-            <table class="admin-table" id="products-table">
+            <table class="admin-table" id="repairs-table">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Image</th>
-                        <th>Name</th>
-                        <th>Category</th>
-                        <th>Price</th>
-                        <th>Stock</th>
+                        <th>Customer</th>
+                        <th>Device</th>
+                        <th>Issue</th>
+                        <th>Status</th>
+                        <th>Cost</th>
                         <th>Actions</th>
                     </tr>
                 </thead>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Dashboard - Admin Panel</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/admin.css">
+    <style>
+        .billing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .billing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .bill-summary {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .bill-total {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+            color: var(--primary-color);
+        }
+
+        .product-select-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+
+        /* Thermal Printer Styles */
+        @media print {
+            @page {
+                size: 80mm auto;
+                margin: 0;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+
+            /* Hide everything by default */
+            body * {
+                visibility: hidden;
+                height: 0;
+                overflow: hidden;
+            }
+
+            /* Show Modal Content */
+            #bill-modal,
+            #bill-modal * {
+                visibility: visible;
+                height: auto;
+                overflow: visible;
+            }
+
+            #bill-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: white;
+                z-index: 9999;
+                display: block !important;
+            }
+
+            .modal-content {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 5px !important;
+                border: none !important;
+                box-shadow: none !important;
+            }
+
+            /* Hide buttons in print */
+            #bill-modal button {
+                display: none !important;
+            }
+
+            /* Receipt Styling */
+            #printable-bill {
+                width: 76mm;
+                /* Keep slightly under 80mm to be safe */
+                margin: 0 auto;
+                font-family: 'Courier New', Courier, monospace;
+                font-size: 12px;
+                color: black;
+            }
+
+            #printable-bill h2 {
+                font-size: 1.2em;
+                margin: 5px 0;
+            }
+
+            #printable-bill p {
+                margin: 2px 0;
+            }
+
+            #printable-bill table {
+                width: 100%;
+                font-size: 12px;
+            }
+
+            #printable-bill th,
+            #printable-bill td {
+                padding: 2px 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="admin-body">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <h2>Admin Panel</h2>
+        <ul class="sidebar-nav">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="manage-products.html">Products</a></li>
+            <li><a href="add-product.html">Add Product</a></li>
+            <li><a href="manage-orders.html">Orders</a></li>
+            <li><a href="manage-repairs.html">Repairs</a></li>
+            <li><a href="billing.html" class="active">Billing</a></li>
+            <li><a href="bill-history.html">Bill History</a></li>
+        </ul>
+        <ul class="sidebar-logout">
+            <li><a href="#" id="admin-logout">Logout</a></li>
+        </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <header class="admin-header">
+            <h3>Billing (Point of Sale)</h3>
+        </header>
+
+        <div class="content-padding">
+            <div class="billing-grid">
+                <!-- Left Column: Selection -->
+                <div class="admin-card">
+                    <h4>Add Items</h4>
+                    <div style="margin-bottom: 20px;">
+                        <label>Customer Name</label>
+                        <input type="text" id="bill-customer-name" placeholder="Walk-in Customer">
+                    </div>
+
+
+
+                    <div style="margin-bottom: 5px;">
+                        <label>Search & Select Product</label>
+                        <input type="text" id="bill-product-search" placeholder="Type product name..."
+                            style="padding: 10px; width: 100%;">
+                    </div>
+
+                    <!-- Search Results Area -->
+                    <div id="product-search-results"
+                        style="border: 1px solid #ddd; max-height: 200px; overflow-y: auto; margin-bottom: 15px; display: none; background: white;">
+                        <!-- Populated by JS -->
+                    </div>
+
+                    <!-- Selected Item Display -->
+                    <div style="background: #e8f0fe; padding: 10px; border-radius: 5px; margin-bottom: 15px; border: 1px solid #b3d7ff; display: none;"
+                        id="selected-product-container">
+                        <strong>Selected:</strong> <span id="selected-product-name">None</span>
+                        <div id="product-stock-display" style="font-size: 0.9em; color: #666; margin-top: 5px;"></div>
+                    </div>
+
+                    <div class="product-select-row">
+                        <div style="flex: 1;">
+                            <label>Quantity</label>
+                            <input type="number" id="bill-quantity" value="1" min="1" style="padding: 10px;">
+                        </div>
+                        <button id="add-to-bill-btn" class="btn" disabled style="opacity: 0.5; cursor: not-allowed;">Add
+                            to Bill</button>
+                    </div>
+                </div>
+
+                <!-- Right Column: Bill Summary -->
+                <div class="admin-card bill-summary">
+                    <h4>Current Bill</h4>
+                    <table class="admin-table" id="bill-table">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th>Price</th>
+                                <th>Qty</th>
+                                <th>Total</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Bill Items -->
+                        </tbody>
+                    </table>
+
+                    <div class="bill-total">
+                        Total: ₹<span id="bill-grand-total">0</span>
+                    </div>
+
+                    <button id="generate-bill-btn" class="btn"
+                        style="width: 100%; margin-top: 20px; background-color: #2ecc71;">Generate Bill & Print</button>
+                    <button id="clear-bill-btn" class="btn btn-danger" style="width: 100%; margin-top: 10px;">Clear
+                        Bill</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bill Modal -->
+    <div id="bill-modal" class="modal"
+        style="display:none; position:fixed; z-index:1001; left:0; top:0; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,0.5);">
+        <div class="modal-content"
+            style="background-color:#ffff; margin:10% auto; padding:40px; border:1px solid #888; width:400px; border-radius:0;">
+            <div id="printable-bill">
+                <div
+                    style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 20px;">
+                    <h2>Computers Hub</h2>
+                    <p>Computer Parts & Repairs</p>
+                    <p>Date: <span id="print-date"></span></p>
+                    <p>Order #: <span id="print-order-id"></span></p>
+                    <p>Customer: <span id="print-customer-name"></span></p>
+                </div>
+
+                <div id="print-items"></div>
+
+                <div
+                    style="border-top: 1px dashed #000; margin-top: 20px; padding-top: 10px; text-align: right; font-weight: bold; font-size: 1.2em;">
+                    Total: ₹<span id="print-total"></span>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px; font-size: 0.8em;">
+                    <p>Thank you for your business!</p>
+                </div>
+            </div>
+
+            <button onclick="window.print()" class="btn" style="margin-top: 20px; width: 100%;">Print</button>
+            <button onclick="document.getElementById('bill-modal').style.display='none'; window.location.reload();"
+                class="btn btn-secondary" style="margin-top: 10px; width: 100%;">Close</button>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+
+</html>
