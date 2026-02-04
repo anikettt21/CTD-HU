@@ -14,8 +14,20 @@ const CURRENT_USER_KEY = 'currentUser';
 
 // --- INITIALIZATION ---
 
+// Migrating to Version 2 to force update for the new 50 products
+const DATA_VERSION = 2;
+const CURRENT_VERSION_KEY = 'data_version';
+
 function initData() {
-    // Check if we need to seed data (less than 20 items means mostly empty or just default)
+    // Check Data Version
+    const storedVersion = localStorage.getItem(CURRENT_VERSION_KEY);
+    if (!storedVersion || parseInt(storedVersion) < DATA_VERSION) {
+        console.log("New data version detected. meaningful update required.");
+        localStorage.setItem(PRODUCTS_KEY, JSON.stringify([])); // Clear products to force re-seed
+        localStorage.setItem(CURRENT_VERSION_KEY, DATA_VERSION);
+    }
+
+    // Check if we need to seed data
     const existing = JSON.parse(localStorage.getItem(PRODUCTS_KEY)) || [];
 
     // Seed Data if empty
